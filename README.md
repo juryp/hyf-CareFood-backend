@@ -260,7 +260,7 @@ DB_HOST=your_database_host
     "coordinates": "50.1234, 10.5678", //not mandatory
     "description": "The best Food Provider" //not mandatory
     }
-
+    ```
 
     ```json
     {
