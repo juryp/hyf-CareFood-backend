@@ -210,6 +210,16 @@ DB_HOST=your_database_host
 
   ```json
   {
+  "name": "Ilon Mask",
+  "email": "imask@example.com",
+  "password": "password123"
+  }
+  ```
+
+  or
+ 
+  ```json
+  {
     "login": "johnsm",
     "name": "John Smith",
     "email": "johnsm@example.com",
@@ -240,19 +250,30 @@ DB_HOST=your_database_host
   ```
 
   Body:
+    ```json
+    {
+    "name": "Supermarket",
+    "email": "contactsm@supermarket.com",
+    "phone": "9876543210", //not mandatory
+    "password": "providerpass",
+    "address": "123 Main Street",
+    "coordinates": "50.1234, 10.5678", //not mandatory
+    "description": "The best Food Provider" //not mandatory
+    }
+
 
     ```json
     {
     "name": "Supermarket",
-    "login": "supermarket_login",
+    "login": "supermarket_login", //not mandatory
     "email": "contact@supermarket.com",
-    "phone": "9876543210",
+    "phone": "9876543210", //not mandatory
     "password": "providerpass",
     "address": "123 Main Street",
-    "coordinates": "50.1234, 10.5678",
-    "description": "Food Provider"
-  }
-  ```
+    "coordinates": "50.1234, 10.5678", //not mandatory
+    "description": "Food Provider" //not mandatory
+    }
+    ```
 
   Response:
 
@@ -277,7 +298,7 @@ DB_HOST=your_database_host
 
   ```json
   {
-    "login": "supermarket_login",
+    "login": "supermarket_login", 
     "password": "providerpass"
   }
   ```
@@ -616,9 +637,10 @@ DB_HOST=your_database_host
   ```json
   {
     "provider_id": 1,
-    "week_start": "2024-09-14",
-    "type": "standard",
-    "quantity": 7
+    "week_start": "2024-10-02",
+    "type": 1,
+    "quantity": 6,
+    "pickup_time": "17:00:00"
   }
   ```
 
@@ -626,9 +648,11 @@ DB_HOST=your_database_host
 
   ```json
   {
-    "message": "Box quantity updated successfully"
+    "message": "Box quantity updated successfully",
+    "pickup_time": "17:00:00"
   }
   ```
+
 
 ### User Controller
 
