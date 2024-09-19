@@ -14,7 +14,7 @@ app.use(cors());
 
 app.use('/offers', offersRoutes);
 app.use('/reservations', reservationsRoutes);
-app.use('/user', usersRoutes);
+app.use('/auth', usersRoutes);
 app.use('/boxes', boxesRoutes);
 
 app.listen(5000, () => {

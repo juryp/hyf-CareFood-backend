@@ -163,6 +163,8 @@ CREATE TABLE reservations (
     provider_id INT,
     reservation_date DATE,
     quantity INT,
+    status ENUM('active', 'issued', 'ready') DEFAULT 'active',
+    issued_date DATE,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (box_id) REFERENCES boxes(id),
     FOREIGN KEY (provider_id) REFERENCES providers(id)
@@ -472,6 +474,60 @@ DB_HOST=your_database_host
   ]
   ```
 
+  Added(change) status of boxes from "Active" to "Ready for issue"
+
+  Ready for all boxes on date
+  
+  Method POST:
+    
+  ```
+  http://localhost:5000/reservations/ready/all
+  ```
+
+  Body:
+
+  ```json
+  {
+  "provider_id": 1,
+  "date": "2024-09-14"
+  }
+  ```
+
+  Ready all reservations of a specific type for a store on date:
+
+  Method POST
+
+  ```
+  http://localhost:5000/reservations/ready/type
+  ```
+
+  Body:
+
+  ```json
+  {
+  "provider_id": 1,
+  "box_type": 1,
+  "date": "2024-09-18"
+  }
+  ```
+
+  Ready all reservations for user on date:
+
+  Method POST
+
+  ```
+  http://localhost:5000/reservations/ready/user
+  ```
+  Body:
+
+  ```json
+  {
+  "provider_id": 1,
+  "user_id": 5,
+  "date": "2024-09-18" 
+  }
+  ```
+
   Issue a Specific Reservation by ID
 
   Method POST:
@@ -504,7 +560,7 @@ DB_HOST=your_database_host
   {
     "provider_id": 1,
     "user_id": 2,
-    "issue_date": "2024-09-14"
+    "date": "2024-09-14"
   }
   ```
 
