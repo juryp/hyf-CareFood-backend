@@ -387,7 +387,7 @@ DB_HOST=your_database_host
     "user_id": 1,
     "provider_id": 3,
     "box_id": 1,
-    "reservation_date": "2024-09-14",
+    "date": "2024-09-14",
     "quantity": 2
   }
   ```
