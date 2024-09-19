@@ -587,44 +587,24 @@ DB_HOST=your_database_host
   ```json
   [
     {
-        "id": 9,
-        "issued_date": "2024-09-17T00:00:00.000Z",
-        "quantity": 4,
-        "type": "Standard",
-        "user_name": "John Smith",
-        "email": "john@example.com"
-    },
-    {
-        "id": 10,
-        "issued_date": "2024-09-17T00:00:00.000Z",
-        "quantity": 2,
-        "type": "Diabetic",
-        "user_name": "John Smith",
-        "email": "john@example.com"
-    },
-    {
-        "id": 11,
-        "issued_date": "2024-09-17T00:00:00.000Z",
-        "quantity": 2,
-        "type": "Standard",
-        "user_name": "John Smith",
-        "email": "john@example.com"
-    },
-    {
-        "id": 18,
-        "issued_date": "2024-09-17T00:00:00.000Z",
+        "id": 4,
+        "reservation_date": "2024-09-14",
         "quantity": 1,
-        "type": "Standard",
-        "user_name": "John Doe",
-        "email": "john.doe@example.com"
-    },
-    {
-        "id": 29,
-        "issued_date": "2024-09-17T00:00:00.000Z",
-        "quantity": 1,
+        "status": "active",
         "type": "Standard",
         "user_name": "John Smith",
-        "email": "john@example.com"
+        "email": "john@example.com",
+        "user_id": 1
+    },
+    {
+       "id": 38,
+        "reservation_date": "2024-09-14",
+        "quantity": 2,
+        "status": "ready",
+        "type": "Standard",
+        "user_name": "Anna White",
+        "email": "anna@example.com",
+        "user_id": 2
     }
   ]
   ```

@@ -51,7 +51,7 @@ router.get('/user/:user_id', async (req, res) => {
         'FROM reservations r ' +
         'JOIN boxes b ON r.box_id = b.id ' +
         'JOIN providers p ON r.provider_id = p.id ' +
-        'WHERE r.user_id = ? AND r.status = "active"';
+        'WHERE r.user_id = ? AND (r.status = "active" OR r.status = "ready")';
     
     const params = [user_id];
     
@@ -212,5 +212,60 @@ router.post('/issue/:id', async (req, res) => {
         res.status(500).json({ error: 'Error issuing reservation' });
     }
 });
+
+// Retrieve the history of issued reservations for a user within a date range
+router.get('/user/:user_id/history', async (req, res) => {
+    const { user_id } = req.params;
+    const { startDate, endDate } = req.query;
+
+    let sql =
+        'SELECT r.id, r.issued_date, r.quantity, b.type, p.name AS provider_name, p.address ' +
+        'FROM reservations r ' +
+        'JOIN boxes b ON r.box_id = b.id ' +
+        'JOIN providers p ON r.provider_id = p.id ' +
+        'WHERE r.user_id = ? AND r.status = "issued"';
+
+    const params = [user_id];
+
+    if (startDate && endDate) {
+        sql += ' AND r.issued_date BETWEEN ? AND ?';
+        params.push(startDate, endDate);
+    }
+
+    try {
+        const reservations = await query(sql, params);
+        res.json(reservations);
+    } catch (err) {
+        res.status(500).json({ error: 'Error retrieving reservation history' });
+    }
+});
+
+// Retrieve the history of issued reservations for a provider within a date range
+router.get('/provider/:provider_id/history', async (req, res) => {
+    const { provider_id } = req.params;
+    const { startDate, endDate } = req.query;
+    
+    let sql =
+    'SELECT r.id, r.issued_date, r.quantity, b.type, u.name AS user_name, u.email ' +
+    'FROM reservations r ' +
+    'JOIN boxes b ON r.box_id = b.id ' +
+    'JOIN users u ON r.user_id = u.id ' +
+    'WHERE r.provider_id = ? AND r.status = "issued"';
+    
+    const params = [provider_id];
+    
+    if (startDate && endDate) {
+    sql += ' AND r.issued_date BETWEEN ? AND ?';
+    params.push(startDate, endDate);
+    }
+    
+    try {
+    const reservations = await query(sql, params);
+    res.json(reservations);
+    } catch (err) {
+    res.status(500).json({ error: 'Error retrieving reservation history' });
+    }
+});
+
 
 export default router;
