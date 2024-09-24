@@ -343,36 +343,104 @@ DB_HOST=your_database_host
   [
     {
         "provider_id": 1,
-        "week_start": "2024-09-14T00:00:00.000Z",
-        "standard_quantity": 1,
-        "vegan_quantity": 15,
-        "diabetic_quantity": 0,
-        "pickup_time": "17:30:00"
+        "provider_name": "Lidl138Gray",
+        "address": "Rue Gray 138, 1050 Ixelles",
+        "date": "2024-09-14",
+        "standard_unit": 18,
+        "vegan_unit": 15,
+        "diabetic_unit": 0,
+        "pickup_time": "17:30:00",
+        "standard_description": "Includes meat or fish products, frozen or fresh, mushrooms, vegetables, fruits, pasta, sauces.",
+        "vegan_description": "Includes only plant-based items: vegetables, fruits, grains, pasta, sauces.",
+        "diabetic_description": "Includes diabetic-friendly items: whole grains, vegetables, low-sugar products."
     },
     {
         "provider_id": 2,
-        "week_start": "2024-09-14T00:00:00.000Z",
-        "standard_quantity": 10,
-        "vegan_quantity": 4,
-        "diabetic_quantity": 2,
-        "pickup_time": "17:30:00"
+        "provider_name": "Lidl40Cote",
+        "address": "Rue des Coteaux 40, 1030 Schaerbeek",
+        "date": "2024-09-14",
+        "standard_unit": 1,
+        "vegan_unit": 4,
+        "diabetic_unit": 2,
+        "pickup_time": "17:30:00",
+        "standard_description": "Includes meat or fish products, frozen or fresh, mushrooms, vegetables, fruits, pasta, sauces.",
+        "vegan_description": "Includes only plant-based items: vegetables, fruits, grains, pasta, sauces.",
+        "diabetic_description": "Includes diabetic-friendly items: whole grains, vegetables, low-sugar products."
     },
     {
         "provider_id": 3,
-        "week_start": "2024-09-14T00:00:00.000Z",
-        "standard_quantity": 9,
-        "vegan_quantity": 4,
-        "diabetic_quantity": 2,
-        "pickup_time": "17:30:00"
+        "provider_name": "AldiWest",
+        "address": "Rue de Intendant 53, 1080 Molenbeek-Saint-Jean",
+        "date": "2024-09-14",
+        "standard_unit": 1,
+        "vegan_unit": 4,
+        "diabetic_unit": 0,
+        "pickup_time": "17:30:00",
+        "standard_description": "Includes meat or fish products, frozen or fresh, mushrooms, vegetables, fruits, pasta, sauces.",
+        "vegan_description": "Includes only plant-based items: vegetables, fruits, grains, pasta, sauces.",
+        "diabetic_description": "Includes diabetic-friendly items: whole grains, vegetables, low-sugar products."
     }
   ]
   ```
 
+  http://localhost:5000/offers?startDate=2024-09-14&endDate=2024-09-14&onlyTotals=true
+
+  Response only total infomations:
+
+  ```json
+  {
+    "offersNum": 3,
+    "offersStandard": 20,
+    "offersVegan": 23,
+    "offersDiabetic": 2,
+    "offersUnit": 45
+  }
+  ```
+  
+
+
+
   ### Reservations Routes
+
+#### Reservation Flow Diagram
+
+This sequence diagram illustrates the interaction between a user, server, and provider during the food box reservation process. The flow covers the stages from viewing available offers, making a reservation, changing the reservation status to "ready," and finally issuing the reserved boxes.
+
+
+  ```mermaid
+  sequenceDiagram
+    participant User1
+    participant Server
+    participant Provider3
+
+    User1->>Server: GET /offers?startDate=2024-09-14&endDate=2024-09-14
+    Server-->>User1: Returns available offers
+
+    User1->>Server: POST /reservations with box_id and quantity
+    Server-->>User1: Reservation created with status "active"
+
+    User1->>Server: GET /reservations/user/1?date=2024-09-14
+    Server-->>User1: Shows reservation with status "active"
+
+    Provider3->>Server: GET /reservations/provider/3?startDate=2024-09-14&endDate=2024-09-14
+    Server-->>Provider3: Shows reservations including user's reservation
+
+    Provider3->>Server: POST /reservations/ready/user with user_id and date
+    Server-->>Provider3: Marks reservation as "ready"
+
+    User1->>Server: GET /reservations/user/1?date=2024-09-14
+    Server-->>User1: Shows reservation with status "ready"
+
+    Provider3->>Server: POST /reservations/issue/4
+    Server-->>Provider3: Marks reservation as "issued"
+
+    User1->>Server: GET /reservations/user/1/history?startDate=2024-09-14&endDate=2024-09-14
+    Server-->>User1: Shows reservation with status "issued"
+  ```
 
 - **POST /reservations**
 
-- Make Reservation (authenticated users only).
+- Make Reservation for User #9 (authenticated users only).
 
   Method POST:
 
@@ -384,11 +452,11 @@ DB_HOST=your_database_host
 
   ```json
   {
-    "user_id": 1,
-    "provider_id": 3,
-    "box_id": 1,
-    "date": "2024-09-14",
-    "quantity": 2
+  "user_id": 9,
+  "date": "2024-09-14",
+  "provider_id": 1,
+  "box_id": 1,
+  "quantity": 2
   }
   ```
 
@@ -408,12 +476,12 @@ DB_HOST=your_database_host
   }
   ```
 
-  Show Reserved Boxes by User #1:
+  Show Reserved Boxes by User #9:
 
   Method GET:
 
   ```
-  http://localhost:5000/reservations/user/1?date=2024-09-14
+  http://localhost:5000/reservations/user/9?date=2024-09-14
   ```
 
   Response:
@@ -614,7 +682,7 @@ DB_HOST=your_database_host
   Method GET:
 
   ```
-  http://localhost:5000/reservations/user/1/history?startDate=2024-09-16&endDate=2024-09-17
+  http://localhost:5000/reservations/user/9?startDate=2024-09-16&endDate=2024-09-17
   ```
 
   Respons:
@@ -658,11 +726,39 @@ DB_HOST=your_database_host
 
   ### Boxes Routes
 
+  Get for provider 3 up-to-date information about the type and description of boxes, and pickup_time
+
+  Method GET
+
+  http://localhost:5000/boxes/get-boxes/3
+
+  Response:
+  ```json
+  {
+    "boxes": [
+        {
+            "type": "Standard",
+            "description": "Includes meat or fish products, frozen or fresh, mushrooms, vegetables, fruits, pasta, sauces."
+        },
+        {
+            "type": "Vegan",
+            "description": "Includes only plant-based items: vegetables, fruits, grains, pasta, sauces."
+        },
+        {
+            "type": "Diabetic",
+            "description": "Includes diabetic-friendly items: whole grains, vegetables, low-sugar products."
+        }
+    ],
+    "pickup_time": "17:00:00"
+  }
+  ```
+
+
   **PUT /boxes/add-boxes**
 
-  Add 7 Standard Boxes for Provider on 14th Sep
+  Add 7 Standard Boxes for Provider 3 on 14th Sep
 
-  Method PUT:
+  Method PUT:reservations/user/1/history
 
   ```
   http://localhost:5000/boxes/add-boxes
@@ -670,15 +766,40 @@ DB_HOST=your_database_host
 
   Body:
 
+  example of the body 1 - no descriptions and pickup_time
   ```json
   {
-    "provider_id": 1,
-    "week_start": "2024-10-02",
-    "type": 1,
-    "quantity": 6,
-    "pickup_time": "17:00:00"
+  "provider_id": 3,
+  "date": "2024-09-14",
+  "type": 1,
+  "quantity": 4
   }
   ```
+
+  example of the body 2 - no descriptions
+
+  ```json
+  {
+  "provider_id": 3,
+  "date": "2024-09-14",
+  "type": 3,
+  "quantity": 2,
+  "pickup_time": "17:30:00"
+  }
+  ```
+
+  example of the body 3 no pickup_time
+
+  ```json
+  {
+  "provider_id": 3,
+  "date": "2024-09-14",
+  "type": 2,
+  "quantity": 3,
+  "description": "New vegan food option"
+  }
+  ```
+
 
   Response:
 
