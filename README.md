@@ -442,7 +442,7 @@ This sequence diagram illustrates the interaction between a user, server, and pr
 
 - Make Reservation for User #9 (authenticated users only).
 
-  Method POST:
+  Method POST
 
   ```
   http://localhost:5000/reservations/
@@ -478,7 +478,7 @@ This sequence diagram illustrates the interaction between a user, server, and pr
 
   Show Reserved Boxes by User #9:
 
-  Method GET:
+  Method GET
 
   ```
   http://localhost:5000/reservations/user/9?date=2024-09-14
@@ -511,7 +511,7 @@ This sequence diagram illustrates the interaction between a user, server, and pr
 
   Show Reserved Boxes in Shop 1
 
-  Method POST:
+  Method POST
 
   ```
   http://localhost:5000/reservations/provider/1?startDate=2024-09-14&endDate=2024-09-14
@@ -546,7 +546,7 @@ This sequence diagram illustrates the interaction between a user, server, and pr
 
   Ready for all boxes on date
   
-  Method POST:
+  Method POST
     
   ```
   http://localhost:5000/reservations/ready/all
@@ -596,9 +596,16 @@ This sequence diagram illustrates the interaction between a user, server, and pr
   }
   ```
 
-  Issue a Specific Reservation by ID
+  Ready for Specific Reservation by ID 81:
 
-  Method POST:
+  Method POST
+  ```
+  http://localhost:5000/reservations/ready/81
+  ```
+
+  Issue a Specific Reservation by ID 18
+
+  Method POST
 
   Issue Reservation ID 18
 
@@ -616,7 +623,7 @@ This sequence diagram illustrates the interaction between a user, server, and pr
 
   Issue All Reservations for a User on a Specific Date
 
-  Method POST:
+  Method POST
 
   ```
   http://localhost:5000/reservations/issue/all
@@ -644,7 +651,7 @@ This sequence diagram illustrates the interaction between a user, server, and pr
 
   For Providers:
 
-  Method GET:
+  Method GET
 
   ```
   http://localhost:5000/reservations/provider/1/history?startDate=2024-09-15&endDate=2024-09-17
@@ -679,7 +686,7 @@ This sequence diagram illustrates the interaction between a user, server, and pr
 
   For Users:
 
-  Method GET:
+  Method GET
 
   ```
   http://localhost:5000/reservations/user/9?startDate=2024-09-16&endDate=2024-09-17
@@ -758,7 +765,7 @@ This sequence diagram illustrates the interaction between a user, server, and pr
 
   Add 7 Standard Boxes for Provider 3 on 14th Sep
 
-  Method PUT:reservations/user/1/history
+  Method PUT
 
   ```
   http://localhost:5000/boxes/add-boxes
@@ -799,6 +806,16 @@ This sequence diagram illustrates the interaction between a user, server, and pr
   "description": "New vegan food option"
   }
   ```
+
+  ```json
+  {
+  "provider_id": 3,
+  "date": "2024-09-14",
+  "type": 2,
+  "quantity": 3,
+  "description": "New vegan food option",
+  "pickup_time": "17:30:00"
+  }
 
 
   Response:
