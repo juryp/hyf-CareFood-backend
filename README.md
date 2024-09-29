@@ -78,6 +78,65 @@ nodejs 20.x version required
    npm install
    ```
 
+2. **Entity Relationship Diagram**
+
+This document outlines the structure of the CareFood project database, using MySQL. It includes entity relationships, sample SQL queries for database creation, and an explanation of user access for team members.
+
+```mermaid
+erDiagram
+    users {
+        INT id PK
+        VARCHAR(100) login
+        VARCHAR(100) name
+        VARCHAR(100) email
+        VARCHAR(20) phone
+        VARCHAR(100) password
+        VARCHAR(20) preferences
+    }
+    providers {
+        INT id PK
+        VARCHAR(100) name
+        VARCHAR(100) login
+        VARCHAR(100) password
+        VARCHAR(100) email
+        VARCHAR(20) phone
+        VARCHAR(255) address
+        VARCHAR(100) coordinates
+        TEXT description
+    }
+    boxes {
+        INT id PK
+        INT provider_id FK
+        VARCHAR(20) type
+        TEXT description
+    }
+    weekly_plans {
+        INT id PK
+        INT provider_id FK
+        DATE week_start
+        INT standard_quantity
+        INT vegan_quantity
+        INT diabetic_quantity
+        TIME pickup_time
+    }
+    reservations {
+        INT id PK
+        INT user_id FK
+        INT box_id FK
+        INT provider_id FK
+        DATE reservation_date
+        INT quantity
+        ENUM('active', 'issued', 'ready') status
+        DATE issued_date
+    }
+
+    users ||--o{ reservations : "places"
+    providers ||--o{ reservations : "manages"
+    providers ||--o{ boxes : "provides"
+    boxes ||--|{ reservations : "contains"
+    providers ||--o{ weekly_plans : "sets up"
+```
+
 3. **Configure environment variables:**
 
    - Create a `.env` file in the root directory and add the following:
@@ -90,7 +149,7 @@ nodejs 20.x version required
      SECRET_KEY=your_secret_key
      ```
 
-4. **Create a database:**
+ 4. **Database Creation SQL**
 
   ```sql
     CREATE DATABASE carefood;
@@ -385,12 +444,6 @@ DB_HOST=your_database_host
 
   ```
   http://localhost:5000/offers?startDate=2024-09-14&endDate=2024-09-14&onlyTotals=true
-  ```
-  
-  or filtered offers for provider 3
-
-  ```
-  http://localhost:5000/offers?startDate=2024-09-14&endDate=2024-09-14&providerId=3
   ```
   
   Response only total infomations:
