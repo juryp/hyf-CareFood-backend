@@ -66,9 +66,9 @@ router.post('/login', async (req, res) => {
     const { login, password } = req.body;
 
     try {
-        // Проверяем как login, так и email
+        // check both login and email for the user
         const userResult = await query(
-            `SELECT * FROM users WHERE (login = ? OR email = ?) AND password = ?`,
+            `SELECT id, login, name, preferences FROM users WHERE (login = ? OR email = ?) AND password = ?`,
             [login, login, password]
         );
 
@@ -77,12 +77,15 @@ router.post('/login', async (req, res) => {
                 message: 'User logged in successfully',
                 id: userResult[0].id,
                 role: 'user',
-                login: userResult[0].login
+                login: userResult[0].login,
+                name: userResult[0].name,
+                preferences: userResult[0].preferences
             });
         }
 
+        // check both login and email for the provider
         const providerResult = await query(
-            `SELECT * FROM providers WHERE (login = ? OR email = ?) AND password = ?`,
+            `SELECT id, login, name, email, address FROM providers WHERE (login = ? OR email = ?) AND password = ?`,
             [login, login, password]
         );
 
@@ -91,11 +94,14 @@ router.post('/login', async (req, res) => {
                 message: 'Provider logged in successfully',
                 id: providerResult[0].id,
                 role: 'provider',
-                login: providerResult[0].login
+                login: providerResult[0].login,
+                name: providerResult[0].name,
+                email: providerResult[0].email,
+                address: providerResult[0].address
             });
         }
 
-        // Если логин или email не подходят
+        // If login or email does not work
         res.status(401).json({ message: 'Invalid login or password' });
     } catch (error) {
         console.error(error);

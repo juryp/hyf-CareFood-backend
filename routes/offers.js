@@ -5,10 +5,11 @@ const router = express.Router();
 
 // Receive offers for a period of time with additional information
 router.get('/', async (req, res) => {
-    const { startDate, endDate, includeTotals, onlyTotals } = req.query;
+    const { startDate, endDate, includeTotals, onlyTotals, providerId } = req.query;
 
     try {
-        const sql = `
+        // Main query with optional condition to filter by provider_id
+        let sql = `
             SELECT wp.provider_id, p.name AS provider_name, p.address, 
                    wp.week_start AS date, wp.standard_quantity AS standard_unit, wp.vegan_quantity AS vegan_unit, wp.diabetic_quantity AS diabetic_unit, 
                    wp.pickup_time, 
@@ -22,20 +23,28 @@ router.get('/', async (req, res) => {
             LEFT JOIN boxes bd ON bd.provider_id = wp.provider_id AND bd.type = 'Diabetic'
             WHERE wp.week_start BETWEEN ? AND ?
         `;
-        const offers = await query(sql, [startDate, endDate]);
+
+        // If providerId is specified, add filtering by provider
+        const params = [startDate, endDate];
+        if (providerId) {
+            sql += ` AND wp.provider_id = ?`;
+            params.push(providerId);
+        }
+
+        const offers = await query(sql, params);
 
         // If there are no offers, return an empty array
         if (offers.length === 0) {
             return res.json(offers);
         }
 
-        // Formatting date without time
+        // Format date without time
         const formattedOffers = offers.map(offer => ({
             ...offer,
-            date: offer.date.toISOString().split('T')[0],  // Format the date
+            date: offer.date.toISOString().split('T')[0],  // Форматируем дату
         }));
 
-        // Calculating totals
+        // We calculate the total values
         const total = {
             offersNum: 0,
             offersStandard: 0,
@@ -44,7 +53,7 @@ router.get('/', async (req, res) => {
             offersUnit: 0,
         };
 
-        // Using Set for unique suppliers
+        // Using Set for Unique Providers
         const uniqueProviders = new Set();
 
         formattedOffers.forEach(offer => {
@@ -60,12 +69,12 @@ router.get('/', async (req, res) => {
         // Sum of all units
         total.offersUnit = total.offersStandard + total.offersVegan + total.offersDiabetic;
 
-        // If onlyTotals is 'true', return only the totals
+        // If onlyTotals = 'true', return only totals
         if (onlyTotals === 'true') {
             return res.json(total);
         }
 
-        // If includeTotals is 'true', add the totals to the response
+        // If includeTotals = 'true', add totals to the response
         if (includeTotals === 'true') {
             formattedOffers.push(total);
         }

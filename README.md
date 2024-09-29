@@ -383,8 +383,16 @@ DB_HOST=your_database_host
   ]
   ```
 
+  ```
   http://localhost:5000/offers?startDate=2024-09-14&endDate=2024-09-14&onlyTotals=true
+  ```
+  
+  or filtered offers for provider 3
 
+  ```
+  http://localhost:5000/offers?startDate=2024-09-14&endDate=2024-09-14&providerId=3
+  ```
+  
   Response only total infomations:
 
   ```json
@@ -396,8 +404,10 @@ DB_HOST=your_database_host
     "offersUnit": 45
   }
   ```
-  
 
+  or filtered offers for provider 3
+
+  http://localhost:5000/offers?startDate=2024-09-14&endDate=2024-09-14&providerId=3
 
 
   ### Reservations Routes
