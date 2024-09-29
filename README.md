@@ -84,57 +84,57 @@ This document outlines the structure of the CareFood project database, using MyS
 
 ```mermaid
 erDiagram
-    users {
-        INT id PK
-        VARCHAR(100) login
-        VARCHAR(100) name
-        VARCHAR(100) email
-        VARCHAR(20) phone
-        VARCHAR(100) password
-        VARCHAR(20) preferences
+    USERS {
+        INT id
+        VARCHAR login
+        VARCHAR name
+        VARCHAR email
+        VARCHAR phone
+        VARCHAR password
+        VARCHAR preferences
     }
-    providers {
-        INT id PK
-        VARCHAR(100) name
-        VARCHAR(100) login
-        VARCHAR(100) password
-        VARCHAR(100) email
-        VARCHAR(20) phone
-        VARCHAR(255) address
-        VARCHAR(100) coordinates
+    PROVIDERS {
+        INT id
+        VARCHAR name
+        VARCHAR login
+        VARCHAR password
+        VARCHAR email
+        VARCHAR phone
+        VARCHAR address
+        VARCHAR coordinates
         TEXT description
     }
-    boxes {
-        INT id PK
-        INT provider_id FK
-        VARCHAR(20) type
+    BOXES {
+        INT id
+        INT provider_id
+        VARCHAR type
         TEXT description
     }
-    weekly_plans {
-        INT id PK
-        INT provider_id FK
+    WEEKLY_PLANS {
+        INT id
+        INT provider_id
         DATE week_start
         INT standard_quantity
         INT vegan_quantity
         INT diabetic_quantity
         TIME pickup_time
     }
-    reservations {
-        INT id PK
-        INT user_id FK
-        INT box_id FK
-        INT provider_id FK
+    RESERVATIONS {
+        INT id
+        INT user_id
+        INT box_id
+        INT provider_id
         DATE reservation_date
         INT quantity
-        ENUM('active', 'issued', 'ready') status
+        ENUM status
         DATE issued_date
     }
 
-    users ||--o{ reservations : "places"
-    providers ||--o{ reservations : "manages"
-    providers ||--o{ boxes : "provides"
-    boxes ||--|{ reservations : "contains"
-    providers ||--o{ weekly_plans : "sets up"
+    USERS ||--o{ RESERVATIONS : places
+    PROVIDERS ||--o{ RESERVATIONS : manages
+    PROVIDERS ||--o{ BOXES : provides
+    BOXES ||--|{ RESERVATIONS : contains
+    PROVIDERS ||--o{ WEEKLY_PLANS : "sets up"
 ```
 
 3. **Configure environment variables:**
