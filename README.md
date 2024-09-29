@@ -78,6 +78,65 @@ nodejs 20.x version required
    npm install
    ```
 
+2. **Entity Relationship Diagram**
+
+This document outlines the structure of the CareFood project database, using MySQL. It includes entity relationships, sample SQL queries for database creation, and an explanation of user access for team members.
+
+```mermaid
+erDiagram
+    USERS {
+        INT id
+        VARCHAR login
+        VARCHAR name
+        VARCHAR email
+        VARCHAR phone
+        VARCHAR password
+        VARCHAR preferences
+    }
+    PROVIDERS {
+        INT id
+        VARCHAR name
+        VARCHAR login
+        VARCHAR password
+        VARCHAR email
+        VARCHAR phone
+        VARCHAR address
+        VARCHAR coordinates
+        TEXT description
+    }
+    BOXES {
+        INT id
+        INT provider_id
+        VARCHAR type
+        TEXT description
+    }
+    WEEKLY_PLANS {
+        INT id
+        INT provider_id
+        DATE week_start
+        INT standard_quantity
+        INT vegan_quantity
+        INT diabetic_quantity
+        TIME pickup_time
+    }
+    RESERVATIONS {
+        INT id
+        INT user_id
+        INT box_id
+        INT provider_id
+        DATE reservation_date
+        INT quantity
+        ENUM status
+        DATE issued_date
+    }
+
+    USERS ||--o{ RESERVATIONS : places
+    PROVIDERS ||--o{ RESERVATIONS : manages
+    PROVIDERS ||--o{ BOXES : provides
+    BOXES ||--|{ RESERVATIONS : contains
+    PROVIDERS ||--o{ WEEKLY_PLANS : "sets up"
+```
+
 3. **Configure environment variables:**
 
    - Create a `.env` file in the root directory and add the following:
@@ -90,7 +149,7 @@ nodejs 20.x version required
      SECRET_KEY=your_secret_key
      ```
 
-4. **Create a database:**
+ 4. **Database Creation SQL**
 
   ```sql
     CREATE DATABASE carefood;
@@ -385,12 +444,6 @@ DB_HOST=your_database_host
 
   ```
   http://localhost:5000/offers?startDate=2024-09-14&endDate=2024-09-14&onlyTotals=true
-  ```
-  
-  or filtered offers for provider 3
-
-  ```
-  http://localhost:5000/offers?startDate=2024-09-14&endDate=2024-09-14&providerId=3
   ```
   
   Response only total infomations:
